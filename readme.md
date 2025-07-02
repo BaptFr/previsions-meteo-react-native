@@ -1,4 +1,4 @@
 Modules :
 
-Expo Location :
-    npx expo install expo-location
+    Expo Location :
+        npx expo install expo-location
