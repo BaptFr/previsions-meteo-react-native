@@ -22,7 +22,6 @@ export default function App() {
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
         const API_URL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric&lang=fr`;
-
         return fetch(API_URL);
       })
       .then((res) => {
@@ -60,7 +59,11 @@ export default function App() {
           previsions: prevTriees[date],
         }));
 
-        setMeteo({ ville, previsions });
+        //Séparation prevs jour / prevs jours suivants
+        const previsionsJour = previsions[0];
+        const previsionsSuivants = previsions.slice[1];
+
+        setMeteo({ ville, previsionsJour, previsionsSuivants });
       })
       .catch((err) => {
         setErrorMsg(err.message);
@@ -70,59 +73,20 @@ export default function App() {
       });
   }, []);
 
+
+   //Gestion erreurs / Chargement
+  if (loading) return <ActivityIndicator size="large" style={styles.center} />;
+  if (errorMsg) return <Text style={styles.center}>{errorMsg}</Text>;
+  if (!meteo) return <Text style={styles.center}>Aucune donnée</Text>;
   return (
     <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" />
-      ) : errorMsg ? (
-        <Text>{errorMsg}</Text>
-      ) : meteo ? (
-        <View>
-          <Text style={styles.title}>En ce moment à </Text>
-          <Text  style={styles.title}> {meteo.ville}</Text>
-
-          {/* Météo actuelle adapté Location */}
-          <View style={styles.currentWeather}>
-            <Image
-              source={{ uri: meteo.previsions[0].previsions[0].iconeUrl }}
-              style={styles.logoMeteo}
-            />
-            <Text style={styles.temperature}>
-              {meteo.previsions[0].previsions[0].temperature} °C
-            </Text>
-            <Text>{meteo.previsions[0].previsions[0].description}</Text>
-          </View>
-
-          {/* Flat list des prevs/jours */}
-          <FlatList
-            data={meteo.previsions}
-            keyExtractor={(item) => item.date}
-            renderItem={({ item }) => (
-              <View style={styles.containerPrevs}>
-                <Text style={styles.date}>{item.date}</Text>
-                <FlatList
-                  horizontal
-                  data={item.previsions}
-                  keyExtractor={(_, i) => i.toString()}
-                  renderItem={({ item: p }) => (
-                    <View style={{ alignItems: 'center', marginRight: 15 }}>
-                      <Text>{p.heure}</Text>
-                      <Image source={{ uri: p.iconeUrl }} style={{ width: 50, height: 50 }} />
-                      <Text>{p.temperature}°C</Text>
-                    </View>
-                  )}
-                
-                />
-              </View>
-            )}
-          />
-        </View>
-      ) : (
-        <Text>Aucune donnée </Text>
-      )}
+      <Text style={styles.title}>En ce moment à {meteo.ville}</Text>
+      <CurrentWeather X /> 
+      <ForecastList Y />
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
