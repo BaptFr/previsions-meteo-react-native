@@ -41,10 +41,14 @@ const styles = StyleSheet.create({
         margin: 5,
     },
     date:{
+        marginLeft: 20,
+        marginTop: 30,
         fontSize: 20,
         fontStyle: 'bold',
+     
     },
     range: {
         marginRight: 40,
     },
+
 })

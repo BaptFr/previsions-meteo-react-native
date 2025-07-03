@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     },
     current: {
         alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: 5,
     },
     currentList: {
         alignItems: 'center',

@@ -1,5 +1,5 @@
- import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator, Image, FlatList, ScrollView } from 'react-native';
+import { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, ActivityIndicator, ImageBackground } from 'react-native';
 import { WEATHER_API_KEY } from './config.js';
 import * as Location from 'expo-location';
 
@@ -12,12 +12,16 @@ export default function App() {
   const [errorMsg, setErrorMsg] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const image = { uri:  'https://images.unsplash.com/photo-1603437873662-dc1f44901825?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'};
+
+
+
   useEffect(() => {
     //Docs EXPO
     Location.requestForegroundPermissionsAsync()
       .then(({ status }) => {
         if (status !== 'granted') {
-          throw new Error("Permission refusée");
+          throw new Error('Permission refusée');
         }
         return Location.getCurrentPositionAsync({});
       })
@@ -78,19 +82,21 @@ export default function App() {
 
 
    //Gestion erreurs / Chargement
-  if (loading) return <ActivityIndicator size="large" style={styles.center} />;
+  if (loading) return <ActivityIndicator size='large' style={styles.center} />;
   if (errorMsg) return <Text style={styles.center}>{errorMsg}</Text>;
   if (!meteo) return <Text style={styles.center}>Aucune donnée</Text>;
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>En ce moment à {meteo.ville}</Text>
-      <CurrentWeather   
-        currentDay= {meteo.previsionsJour}
-      />
-      <Text style={styles.title}>Ces prochains jours à {meteo.ville}:</Text>
-      <NextPrevisionsWeather
-        nextDays= {meteo.previsionsSuivants}
-      />
+      <ImageBackground source={image} style={styles.imageback}>
+        <Text style={styles.title}>En ce moment à {meteo.ville}</Text>
+        <CurrentWeather   
+          currentDay= {meteo.previsionsJour}
+        />
+        <Text style={styles.title}>Ces prochains jours à {meteo.ville}:</Text>
+        <NextPrevisionsWeather
+          nextDays= {meteo.previsionsSuivants}
+        />
+      </ImageBackground>
     </View>
   );
 }
@@ -98,37 +104,18 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 20,
-    paddingHorizontal: 30,
-    backgroundColor: '#fff',
     flex: 1,
   },
-  title: {
-    marginTop: 20,
-    padding: 40,
+  title: {    
+    paddingTop: 75,
+    paddingHorizontal: 40,
     fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: '#FA5000',
+    textShadowColor: "#242323",
+    textShadowOffset: {width: 2, height: 2},
+    shadowRadius: 5,
   },
 
-  currentWeather: {
-    alignItems: 'center',
-    marginBottom: 25,
-  },
-  containerPrevs:{
-    marginBottom : 50,
-  },
-  temperature: {
-    fontSize: 28,
-    fontWeight: 'bold',
-  },
-  logoMeteo: {
-    width: 100,
-    height: 100,
-  },
-  date: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
 });
