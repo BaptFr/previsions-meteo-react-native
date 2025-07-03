@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator, Image, FlatList } from 'react-native';
+ import { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, ActivityIndicator, Image, FlatList, ScrollView } from 'react-native';
 import { WEATHER_API_KEY } from './config.js';
 import * as Location from 'expo-location';
+
+import CurrentWeather from './components/currentWeather.js';
+import NextPrevisionsWeather from './components/nextPrevisionsWeather.js';
 
 export default function App() {
   //Gestion des états
@@ -61,7 +64,7 @@ export default function App() {
 
         //Séparation prevs jour / prevs jours suivants
         const previsionsJour = previsions[0];
-        const previsionsSuivants = previsions.slice[1];
+        const previsionsSuivants = previsions.slice(1);
 
         setMeteo({ ville, previsionsJour, previsionsSuivants });
       })
@@ -81,8 +84,13 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>En ce moment à {meteo.ville}</Text>
-      <CurrentWeather X /> 
-      <ForecastList Y />
+      <CurrentWeather   
+        currentDay= {meteo.previsionsJour}
+      />
+      <Text style={styles.title}>Ces prochains jours à {meteo.ville}:</Text>
+      <NextPrevisionsWeather
+        nextDays= {meteo.previsionsSuivants}
+      />
     </View>
   );
 }
@@ -90,12 +98,14 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 60,
-    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingHorizontal: 30,
     backgroundColor: '#fff',
     flex: 1,
   },
   title: {
+    marginTop: 20,
+    padding: 40,
     fontSize: 22,
     fontWeight: 'bold',
     textAlign: 'center',
